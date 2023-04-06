@@ -109,7 +109,7 @@ button:disabled {
 	transition: width 1s ease-in-out;
 }
 
-.imagelet > img {
+.imagelet > .imageletImage {
 	height: 100%;
 	user-select: none;
 }

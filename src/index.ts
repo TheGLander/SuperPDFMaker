@@ -8,7 +8,9 @@ function getPdfSize(pdf: jsPDF): [number, number] {
 	return [pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight()]
 }
 
-function generatePdf(images: HTMLImageElement[]): jsPDF {
+type GeneralImage = HTMLCanvasElement | HTMLImageElement
+
+function generatePdf(images: GeneralImage[]): jsPDF {
 	const pdf = new jsPDF()
 	const pageSize = getPdfSize(pdf)
 	let isFirstPage = true
@@ -49,7 +51,7 @@ const downloadButton =
 
 downloadButton.addEventListener("click", () => {
 	const images = Array.from(imageList.children).map(
-		imagelet => imagelet.querySelector<HTMLImageElement>("img")!
+		imagelet => imagelet.querySelector<GeneralImage>(".imageletImage")!
 	)
 	const pdf = generatePdf(images)
 	pdf.save("spm.pdf")
@@ -63,9 +65,9 @@ const sortable = new Sortable(imageList, {
 	animation: 150,
 })
 
-function rotateImage(inputImage: HTMLImageElement): HTMLImageElement {
+function rotateImage(inputImage: GeneralImage): GeneralImage {
 	const canvas = document.createElement("canvas")
-	const imageSize = [inputImage.naturalWidth, inputImage.naturalHeight]
+	const imageSize = [inputImage.width, inputImage.height]
 	canvas.width = imageSize[1]
 	canvas.height = imageSize[0]
 
@@ -76,10 +78,20 @@ function rotateImage(inputImage: HTMLImageElement): HTMLImageElement {
 
 	ctx.drawImage(inputImage, -imageSize[0] / 2, -imageSize[1] / 2)
 
-	const image = document.createElement("img")
-	image.src = canvas.toDataURL()
+	return canvas
+}
 
-	return image
+// Redraw the image on a pixel space to get rid of all the annoying EXIF data
+function remakeImage(image: GeneralImage): GeneralImage {
+	const canvas = document.createElement("canvas")
+	canvas.width = image.width
+	canvas.height = image.height
+
+	const ctx = canvas.getContext("2d")!
+
+	ctx.drawImage(image, 0, 0)
+
+	return canvas
 }
 
 async function makeImagefromBlob(imageBlob: Blob): Promise<HTMLImageElement> {
@@ -99,7 +111,12 @@ async function makeImagefromBlob(imageBlob: Blob): Promise<HTMLImageElement> {
 const imageletTemplate =
 	document.querySelector<HTMLTemplateElement>("#imageletTemplate")!
 
-function makeImagelet(image: HTMLImageElement): void {
+function prepareImageletImage(image: GeneralImage): void {
+	image.draggable = false
+	image.classList.add("imageletImage")
+}
+
+function makeImagelet(image: GeneralImage): void {
 	const imageletFragment = imageletTemplate.content.cloneNode(
 		true
 	) as DocumentFragment
@@ -109,7 +126,7 @@ function makeImagelet(image: HTMLImageElement): void {
 	imagelet.replaceChild(image, templateImage)
 
 	// TODO Automatically inherit the OG image's attributes?
-	image.draggable = false
+	prepareImageletImage(image)
 
 	const removeButton =
 		imagelet.querySelector<HTMLButtonElement>(".removeButton")!
@@ -120,8 +137,10 @@ function makeImagelet(image: HTMLImageElement): void {
 	const rotateButton =
 		imagelet.querySelector<HTMLButtonElement>(".rotateButton")!
 	rotateButton.addEventListener("click", () => {
-		const newestImage = imagelet.querySelector("img")!
-		imagelet.replaceChild(rotateImage(newestImage), newestImage)
+		const currentImage = imagelet.querySelector<GeneralImage>(".imageletImage")!
+		const newImage = rotateImage(currentImage)
+		prepareImageletImage(newImage)
+		imagelet.replaceChild(newImage, currentImage)
 	})
 
 	imageList.appendChild(imagelet)
@@ -130,7 +149,8 @@ function makeImagelet(image: HTMLImageElement): void {
 
 async function loadFiles(files: FileList): Promise<void> {
 	for (const file of files) {
-		const image = await makeImagefromBlob(file)
+		let image: GeneralImage = await makeImagefromBlob(file)
+		image = remakeImage(image)
 		makeImagelet(image)
 	}
 }
