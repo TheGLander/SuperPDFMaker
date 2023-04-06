@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Super PDF Maker</title>
+	</head>
+	<body>
+		<template id="imageletTemplate">
+			<div class="imagelet container">
+				<img draggable="false" />
+				<button title="Remove image" class="removeButton">💣</button>
+			</div>
+		</template>
+		<img src="./logo.png" id="websiteLogo" />
+		<div id="imageListContainer" class="container">
+			<div id="imageList"></div>
+		</div>
+		<input type="file" id="fileInput" multiple accept="image/*" />
+		<div id="buttonContainer" class="container">
+			<button id="addImageButton">Add image</button>
+			<button id="removeAllButton">Remove all</button>
+			<button id="downloadButton" disabled autocomplete="off">Download!</button>
+		</div>
+		<script src="./src/index.ts" type="module"></script>
+	</body>
+</html>

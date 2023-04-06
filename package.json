@@ -1,0 +1,17 @@
+{
+	"name": "SuperPDFMaker",
+	"version": "1.0.0",
+	"license": "MIT",
+	"scripts": {
+		"dev": "vite dev"
+	},
+	"devDependencies": {
+		"@types/sortablejs": "^1.15.1",
+		"sortablejs": "^1.15.0",
+		"typescript": "^5.0.3",
+		"vite": "^4.2.1"
+	},
+	"dependencies": {
+		"jspdf": "^2.5.1"
+	}
+}

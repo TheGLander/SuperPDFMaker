@@ -1,0 +1,121 @@
+#websiteLogo {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+body {
+	background-color: black;
+	--theme-color-huesat: 30deg 0%;
+	font-family: sans-serif;
+	color: aliceblue;
+}
+
+.container {
+	border-radius: 5px;
+	background: hsl(var(--theme-color-huesat) 20%);
+	padding: 0.5em;
+}
+
+button {
+	--button-high-color: hsl(var(--theme-color-huesat) 40%);
+	--button-low-color: hsl(var(--theme-color-huesat) 33%);
+	color: var(--text-color);
+	padding: 0 0.4em;
+	border-width: 2px;
+	border-style: solid;
+	border-color: var(--button-high-color) var(--button-low-color)
+		var(--button-low-color) var(--button-high-color);
+	border-radius: 2px;
+	background-image: linear-gradient(
+		to bottom,
+		var(--button-high-color),
+		var(--button-low-color)
+	);
+}
+
+button:hover:enabled {
+	--button-high-color: hsl(var(--theme-color-huesat) 45%);
+	--button-low-color: hsl(var(--theme-color-huesat) 38%);
+}
+
+button:active:enabled {
+	--button-high-color: hsl(var(--theme-color-huesat) 30%);
+	--button-low-color: hsl(var(--theme-color-huesat) 23%);
+}
+
+button:disabled {
+	--button-high-color: hsl(var(--theme-color-huesat) 20%);
+	--button-low-color: hsl(var(--theme-color-huesat) 13%);
+	color: var(--text-color-disabled);
+}
+
+#buttonContainer {
+	width: fit-content;
+	display: grid;
+	flex-direction: row;
+	width: 40vw;
+	height: 15vh;
+	gap: 0.5em;
+	margin: 0 auto;
+	grid-template:
+		". ." 1fr
+		"download download" 1fr/ 1fr 1fr;
+}
+
+#addImageButton {
+	--theme-color-huesat: 120deg 50%;
+}
+
+#removeAllButton {
+	--theme-color-huesat: 0deg 50%;
+}
+
+#downloadButton {
+	--theme-color-huesat: 230deg 50%;
+	grid-area: download;
+}
+
+#fileInput {
+	display: none;
+}
+
+#imageListContainer {
+	height: max(30vh, 200px);
+	width: 80vw;
+	margin: 5vh auto;
+}
+
+#imageList {
+	overflow-x: scroll;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 1em;
+	padding-left: 1em;
+	align-items: center;
+}
+
+#imageList:empty:before {
+	content: "Press Add image or drag an image into here.";
+	margin: auto;
+	margin: auto;
+}
+
+.imagelet {
+	position: relative;
+	height: 80%;
+	--theme-color-huesat: 240deg 10%;
+	transition: width 1s ease-in-out;
+}
+
+.imagelet > img {
+	height: 100%;
+	user-select: none;
+}
+
+.removeButton {
+	position: absolute;
+	right: 1em;
+	top: 1em;
+}
