@@ -114,8 +114,11 @@ button:disabled {
 	user-select: none;
 }
 
-.removeButton {
+.optionsBar {
 	position: absolute;
 	right: 1em;
 	top: 1em;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25em;
 }

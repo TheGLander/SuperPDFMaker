@@ -63,6 +63,25 @@ const sortable = new Sortable(imageList, {
 	animation: 150,
 })
 
+function rotateImage(inputImage: HTMLImageElement): HTMLImageElement {
+	const canvas = document.createElement("canvas")
+	const imageSize = [inputImage.naturalWidth, inputImage.naturalHeight]
+	canvas.width = imageSize[1]
+	canvas.height = imageSize[0]
+
+	const ctx = canvas.getContext("2d")!
+
+	ctx.translate(imageSize[1] / 2, imageSize[0] / 2)
+	ctx.rotate(Math.PI / 2)
+
+	ctx.drawImage(inputImage, -imageSize[0] / 2, -imageSize[1] / 2)
+
+	const image = document.createElement("img")
+	image.src = canvas.toDataURL()
+
+	return image
+}
+
 async function makeImagefromBlob(imageBlob: Blob): Promise<HTMLImageElement> {
 	return new Promise((res, rej) => {
 		const url = URL.createObjectURL(imageBlob)
@@ -97,6 +116,12 @@ function makeImagelet(image: HTMLImageElement): void {
 	removeButton.addEventListener("click", () => {
 		imagelet.remove()
 		updateDownloadButtonStatus()
+	})
+	const rotateButton =
+		imagelet.querySelector<HTMLButtonElement>(".rotateButton")!
+	rotateButton.addEventListener("click", () => {
+		const newestImage = imagelet.querySelector("img")!
+		imagelet.replaceChild(rotateImage(newestImage), newestImage)
 	})
 
 	imageList.appendChild(imagelet)
