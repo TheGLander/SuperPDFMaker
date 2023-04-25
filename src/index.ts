@@ -11,7 +11,7 @@ function getPdfSize(pdf: jsPDF): [number, number] {
 type GeneralImage = HTMLCanvasElement | HTMLImageElement
 
 function generatePdf(images: GeneralImage[]): jsPDF {
-	const pdf = new jsPDF()
+	const pdf = new jsPDF({ compress: true })
 	const pageSize = getPdfSize(pdf)
 	let isFirstPage = true
 	for (const image of images) {
@@ -38,7 +38,9 @@ function generatePdf(images: GeneralImage[]): jsPDF {
 			pageSize[0] * padding,
 			pageSize[1] * padding,
 			imageWidth,
-			imageHeight
+			imageHeight,
+			undefined,
+			"SLOW"
 		)
 	}
 	return pdf
