@@ -149,7 +149,11 @@ function makeImagelet(image: GeneralImage): void {
 	updateDownloadButtonStatus()
 }
 
-async function loadFiles(files: FileList): Promise<void> {
+async function loadFiles(fileList: FileList): Promise<void> {
+	const files = [...fileList]
+	// The default iteration order in a `FileList` is seemingly arbitrary and on
+	// some platforms useless, so actually sort the files by their modify date
+	files.sort((a, b) => a.lastModified - b.lastModified)
 	for (const file of files) {
 		let image: GeneralImage = await makeImagefromBlob(file)
 		image = remakeImage(image)
